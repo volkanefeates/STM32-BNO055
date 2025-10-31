@@ -1,20 +1,20 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2025 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : main.c
+ * @brief          : Main program body
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2025 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -60,9 +60,9 @@ HAL_StatusTypeDef BNO055_Configure_NDOF(void);
 /* USER CODE END 0 */
 
 /**
-  * @brief  The application entry point.
-  * @retval int
-  */
+ * @brief  The application entry point.
+ * @retval int
+ */
 int main(void)
 {
 
@@ -91,16 +91,15 @@ int main(void)
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
   if (BNO055_Init(&hi2c1) == HAL_OK)
-    {
-        bno_initialized = 1;
-        printf("BNO055 kütüphanesi başlatıldı.\n");
-    }
-    else
-    {
-        bno_initialized = 0;
-        printf("BNO055 başlatma hatası!\n");
-    }
-
+  {
+    bno_initialized = 1;
+    printf("BNO055 library initialized.\n");
+  }
+  else
+  {
+    bno_initialized = 0;
+    printf("BNO055 initialization error!\n");
+  }
 
   /* USER CODE END 2 */
 
@@ -109,36 +108,36 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  if (bno_initialized == 1)
-	      {
-	          HAL_StatusTypeDef ret = BNO055_Read_Euler(&hi2c1, &myEulerData);
+    if (bno_initialized == 1)
+    {
+      HAL_StatusTypeDef ret = BNO055_Read_Euler(&hi2c1, &myEulerData);
 
-	          if (ret == HAL_OK)
-	          {
-	              printf("Z (H): %.2f, Y (R): %.2f, X (P): %.2f \n",
-	                      myEulerData.z,
-	                      myEulerData.y,
-	                      myEulerData.x);
-	          }
-	          else
-	          {
-	              printf("BNO055 okuma hatası!\n");
-	              bno_initialized = 0;
-	          }
-	      }
-	      else
-	      {
-	          printf("BNO055 yeniden baslatiliyor...\n");
-	          if (BNO055_Init(&hi2c1) == HAL_OK)
-	          {
-	              bno_initialized = 1;
-	          }
-	          else
-	          {
-	          }
-	      }
+      if (ret == HAL_OK)
+      {
+        printf("Z (H): %.2f, Y (R): %.2f, X (P): %.2f \n",
+               myEulerData.z,
+               myEulerData.y,
+               myEulerData.x);
+      }
+      else
+      {
+        printf("BNO055 read error!\n");
+        bno_initialized = 0;
+      }
+    }
+    else
+    {
+      printf("BNO055 reinitializing...\n");
+      if (BNO055_Init(&hi2c1) == HAL_OK)
+      {
+        bno_initialized = 1;
+      }
+      else
+      {
+      }
+    }
 
-	      HAL_Delay(100);
+    HAL_Delay(100);
 
     /* USER CODE BEGIN 3 */
   }
@@ -146,22 +145,22 @@ int main(void)
 }
 
 /**
-  * @brief System Clock Configuration
-  * @retval None
-  */
+ * @brief System Clock Configuration
+ * @retval None
+ */
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
   /** Configure the main internal regulator output voltage
-  */
+   */
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
   /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
+   * in the RCC_OscInitTypeDef structure.
+   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
@@ -178,16 +177,15 @@ void SystemClock_Config(void)
   }
 
   /** Activate the Over-Drive mode
-  */
+   */
   if (HAL_PWREx_EnableOverDrive() != HAL_OK)
   {
     Error_Handler();
   }
 
   /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+   */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
@@ -200,10 +198,10 @@ void SystemClock_Config(void)
 }
 
 /**
-  * @brief I2C1 Initialization Function
-  * @param None
-  * @retval None
-  */
+ * @brief I2C1 Initialization Function
+ * @param None
+ * @retval None
+ */
 static void MX_I2C1_Init(void)
 {
 
@@ -230,14 +228,13 @@ static void MX_I2C1_Init(void)
   /* USER CODE BEGIN I2C1_Init 2 */
 
   /* USER CODE END I2C1_Init 2 */
-
 }
 
 /**
-  * @brief GPIO Initialization Function
-  * @param None
-  * @retval None
-  */
+ * @brief GPIO Initialization Function
+ * @param None
+ * @retval None
+ */
 static void MX_GPIO_Init(void)
 {
   /* USER CODE BEGIN MX_GPIO_Init_1 */
@@ -268,9 +265,9 @@ int _write(int file, char *ptr, int len)
 /* USER CODE END 4 */
 
 /**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
+ * @brief  This function is executed in case of error occurrence.
+ * @retval None
+ */
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
@@ -283,12 +280,12 @@ void Error_Handler(void)
 }
 #ifdef USE_FULL_ASSERT
 /**
-  * @brief  Reports the name of the source file and the source line number
-  *         where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
-  */
+ * @brief  Reports the name of the source file and the source line number
+ *         where the assert_param error has occurred.
+ * @param  file: pointer to the source file name
+ * @param  line: assert_param error line source number
+ * @retval None
+ */
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */

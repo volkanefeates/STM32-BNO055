@@ -1,7 +1,6 @@
 #include "bno055.h"
 #include <stdio.h>
 
-
 HAL_StatusTypeDef BNO055_Init(I2C_HandleTypeDef *hi2c)
 {
     uint8_t tx_data[1];
@@ -11,25 +10,25 @@ HAL_StatusTypeDef BNO055_Init(I2C_HandleTypeDef *hi2c)
     ret = HAL_I2C_IsDeviceReady(hi2c, BNO055_I2C_ADDR, 2, 100);
     if (ret != HAL_OK)
     {
-        printf("BNO055 bulunamadi!\n");
+        printf("BNO055 not found!\n");
         return ret;
     }
-     printf("BNO055 algilandi.\n");
+    printf("BNO055 detected.\n");
 
     ret = HAL_I2C_Mem_Read(hi2c, BNO055_I2C_ADDR, BNO055_CHIP_ID_REG, I2C_MEMADD_SIZE_8BIT, &chip_id, 1, 100);
     if (ret != HAL_OK || chip_id != BNO055_CHIP_ID_VAL)
     {
-         printf("BNO055 Chip ID hatasi! Okunan: 0x%02X\n", chip_id);
-         return HAL_ERROR;
+        printf("BNO055 Chip ID error! Read: 0x%02X\n", chip_id);
+        return HAL_ERROR;
     }
-     printf("Chip ID dogrulandi.\n");
+    printf("Chip ID verified.\n");
 
     tx_data[0] = BNO055_CONFIG_MODE;
     ret = HAL_I2C_Mem_Write(hi2c, BNO055_I2C_ADDR, BNO055_OPR_MODE_ADDR, I2C_MEMADD_SIZE_8BIT, tx_data, 1, 100);
     if (ret != HAL_OK)
     {
-         printf("CONFIG moduna gecilemedi.\n");
-         return ret;
+        printf("Failed to enter CONFIG mode.\n");
+        return ret;
     }
     HAL_Delay(20);
 
@@ -37,12 +36,12 @@ HAL_StatusTypeDef BNO055_Init(I2C_HandleTypeDef *hi2c)
     ret = HAL_I2C_Mem_Write(hi2c, BNO055_I2C_ADDR, BNO055_OPR_MODE_ADDR, I2C_MEMADD_SIZE_8BIT, tx_data, 1, 100);
     if (ret != HAL_OK)
     {
-         printf("NDOF moduna gecilemedi.\n");
-         return ret;
+        printf("Failed to enter NDOF mode.\n");
+        return ret;
     }
     HAL_Delay(500);
 
-    printf("BNO055 NDOF modunda baslatildi.\n");
+    printf("BNO055 initialized in NDOF mode.\n");
     return HAL_OK;
 }
 
@@ -58,8 +57,7 @@ HAL_StatusTypeDef BNO055_Read_Euler(I2C_HandleTypeDef *hi2c, BNO055_EulerData_t 
         I2C_MEMADD_SIZE_8BIT,
         rx_buffer,
         6,
-        100
-    );
+        100);
 
     if (ret == HAL_OK)
     {
